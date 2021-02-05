@@ -1,0 +1,15 @@
+{
+  "name": "vendor_name/tdd-product-api",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "wouter.nolten",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4.9"
+  }
+}
