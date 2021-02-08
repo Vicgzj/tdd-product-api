@@ -1,0 +1,4 @@
+health.status:
+  path: /health/instance
+  controller: 'health.status.controller'
+  methods: GET
