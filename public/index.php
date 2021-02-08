@@ -2,7 +2,13 @@
 
 declare(strict_types=1);
 
+use Coolblue\Utils\Http;
+use Laminas\Diactoros\ResponseFactory;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-http_response_code(200);
-echo "Hello world";
+$http = new Http();
+$request = $http->getRequestFromGlobals();
+$response = (new ResponseFactory())->createResponse();
+$response->getBody()->write("Hello world");
+$http->outputResponse($response);
