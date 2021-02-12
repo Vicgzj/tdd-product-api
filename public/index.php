@@ -25,7 +25,13 @@ $symfonyRouter = new SymfonyRouter(
 
 $router = new Router($symfonyRouter);
 $request = $http->getRequestFromGlobals();
-$request = $router->preProcessRequest($request);
-$response = (new ResponseFactory())->createResponse();
-$response->getBody()->write("Hello world");
-$http->outputResponse($response);
+try {
+    $request = $router->preProcessRequest($request);
+    $response = $router->processRequest($request);
+    $http->outputResponse($response);
+} catch (Exception $exception) {
+    $response = (new ResponseFactory())->createResponse(500);
+    $response->getBody()->write($exception->getMessage());
+    $http->outputResponse($response);
+}
+

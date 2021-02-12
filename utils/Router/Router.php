@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Coolblue\Utils\Router;
 
 use Exception;
+use http\Header;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\ResponseFactory;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Router as SymfonyRouter;
@@ -33,7 +37,7 @@ class Router
         } catch (SymfonyMethodNotAllowedException $exception) {
             throw new MethodNotAllowedException($exception);
         } catch (Exception $exception) {
-            throw new RouteNotFoundException($exception);
+            throw new RouteNotFoundException($exception->getMessage(), 0, $exception);
         }
 
         foreach ($parameters as $name => $value) {
@@ -41,5 +45,20 @@ class Router
         }
 
         return $request;
+    }
+
+    public function processRequest(ServerRequestInterface $request): ResponseInterface
+    {
+        $controllerName = $request->getAttribute('_controller');
+
+        if ($controllerName === null) {
+            throw new ControllerNotConfiguredException();
+        }
+
+        $response = (new ResponseFactory())->createResponse(200);
+        $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode(['success' => true]));
+
+        return $response;
     }
 }
