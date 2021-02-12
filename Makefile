@@ -5,3 +5,7 @@ help:
 .PHONY: clear_cache
 clear_cache: ## Clears the cache
 	rm -rf ./cache/*
+
+.PHONY: start
+start: ## Start the API
+	php -S 127.0.0.1:8000 -t public
