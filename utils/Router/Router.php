@@ -47,6 +47,14 @@ class Router
         return $request;
     }
 
+    public function warm(): void
+    {
+        try {
+            $this->router->match('');
+        } catch (\Throwable $exception) {
+        }
+    }
+
     public function processRequest(ServerRequestInterface $request): ResponseInterface
     {
         $controllerName = $request->getAttribute('_controller');

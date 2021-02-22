@@ -1,0 +1,7 @@
+services:
+  container:
+    class: Coolblue\Utils\Container\Container
+    factory: ['@container.builder', get]
+
+  container.builder:
+    class: Coolblue\Utils\Container\ContainerBuilder

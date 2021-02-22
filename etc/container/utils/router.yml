@@ -1,0 +1,9 @@
+services:
+  _defaults: { public: true }
+
+  router:
+    class: Coolblue\Utils\Router\Router
+    factory: ['@router.factory', create]
+
+  router.factory:
+    class: Coolblue\Utils\Router\RouterFactory

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Coolblue\Utils;
+namespace Coolblue\Utils\Http;
 
 use Laminas\Diactoros\ServerRequestFactory;
 use Psr\Http\Message\ResponseInterface;

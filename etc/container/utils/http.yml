@@ -1,0 +1,5 @@
+services:
+  _defaults: { public: true }
+
+  http:
+    class: Coolblue\Utils\Http\Http

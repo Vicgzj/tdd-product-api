@@ -2,29 +2,32 @@
 
 declare(strict_types=1);
 
-use Coolblue\Utils\Http;
-use Coolblue\Utils\Router\Router;
+use Coolblue\Utils\Container\ContainerBuilder;
+use Coolblue\Utils\Http\Http;
 use Laminas\Diactoros\ResponseFactory;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Routing\Loader\YamlFileLoader;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Router as SymfonyRouter;
+use Symfony\Component\Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$http = new Http();
+(new Dotenv())->load(__DIR__ . '/../.env');
 
-$fileLocator = new FileLocator(['./../etc']);
-
-$symfonyRouter = new SymfonyRouter(
-    new YamlFileLoader($fileLocator),
-    'routes.yml',
-    ['cache_dir' => './../cache/routing'],
-    new RequestContext('/')
+/** @psalm-suppress PossiblyFalseOperand */
+($containerBuilder = new ContainerBuilder())->build(
+    $_ENV['ROOT_DIR'] . '/etc/container/container.yml',
+    $_ENV['ROOT_DIR'] . '/etc/config/config.yml',
+    $_ENV['ROOT_DIR'] . '/cache/container/containerCache.php'
 );
 
-$router = new Router($symfonyRouter);
+$container = $containerBuilder->get();
+
+/** @var Http $http */
+$http = $container->get('http');
+
+/** @var $router $router */
+$router = $container->get('router');
+
 $request = $http->getRequestFromGlobals();
+
 try {
     $request = $router->preProcessRequest($request);
     $response = $router->processRequest($request);
@@ -34,4 +37,3 @@ try {
     $response->getBody()->write($exception->getMessage());
     $http->outputResponse($response);
 }
-
