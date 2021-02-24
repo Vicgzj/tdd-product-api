@@ -4,23 +4,29 @@ declare(strict_types=1);
 
 namespace Coolblue\Utils\Router;
 
+use Coolblue\Utils\Router\Exception\BuildControllerException;
+use Coolblue\Utils\Router\Exception\ControllerNotConfiguredException;
+use Coolblue\Utils\Router\Exception\ControllerNotFoundException;
+use Coolblue\Utils\Router\Exception\InvalidControllerException;
+use Coolblue\Utils\Router\Exception\MethodNotAllowedException;
 use Exception;
-use http\Header;
-use Laminas\Diactoros\Response;
-use Laminas\Diactoros\ResponseFactory;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Router as SymfonyRouter;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException as SymfonyMethodNotAllowedException;
 
 class Router
 {
     private SymfonyRouter $router;
+    private ContainerInterface $container;
 
-    public function __construct(SymfonyRouter $router)
+    public function __construct(ContainerInterface $container, SymfonyRouter $router)
     {
         $this->router = $router;
+        $this->container = $container;
     }
 
     /**
@@ -55,6 +61,14 @@ class Router
         }
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws BuildControllerException
+     * @throws ControllerNotConfiguredException
+     * @throws ControllerNotFoundException
+     * @throws InvalidControllerException
+     */
     public function processRequest(ServerRequestInterface $request): ResponseInterface
     {
         $controllerName = $request->getAttribute('_controller');
@@ -63,10 +77,33 @@ class Router
             throw new ControllerNotConfiguredException();
         }
 
-        $response = (new ResponseFactory())->createResponse(200);
-        $response->withHeader('Content-Type', 'application/json');
-        $response->getBody()->write(json_encode(['success' => true]));
+        $controller = $this->buildController($controllerName);
 
-        return $response;
+        return $controller->handle($request);
+    }
+
+    /**
+     * @param string $controllerName
+     * @return RequestHandlerInterface
+     * @throws ControllerNotFoundException
+     * @throws InvalidControllerException
+     */
+    private function buildController(string $controllerName): RequestHandlerInterface
+    {
+        if ($this->container->has($controllerName) === false) {
+            throw new ControllerNotFoundException();
+        }
+
+        try {
+            $controller = $this->container->get($controllerName);
+        } catch (Exception $exception) {
+            throw new BuildControllerException($exception);
+        }
+
+        if ($controller instanceof RequestHandlerInterface === false) {
+            throw new InvalidControllerException();
+        }
+
+        return $controller;
     }
 }

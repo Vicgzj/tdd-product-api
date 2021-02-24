@@ -1,0 +1,5 @@
+parameters:
+  routing:
+    routes_dir: '%env(ROOT_DIR)%/etc/routing'
+    cache_dir: '%env(ROOT_DIR)%/cache/routing'
+    routes_file: 'routes.yml'

@@ -14,22 +14,55 @@ use Symfony\Component\Routing\Router as SymfonyRouter;
 
 class RouterFactory
 {
+    public const CONFIG_KEY_ROUTES_DIR = 'routes_dir';
+    public const CONFIG_KEY_ROUTES_FILE = 'routes_file';
+    public const CONFIG_KEY_CACHE_DIR = 'cache_dir';
+
+    private ContainerInterface $container;
+    private ConfigInterface $config;
+
+    public function __construct(ContainerInterface $container, ConfigInterface $config)
+    {
+        $this->container = $container;
+        $this->config = $config;
+    }
+
     /**
      * @return Router
+     * @throws MissingConfigKeyException
      */
     public function create(): Router
     {
-        $fileLocator = new FileLocator(['./../etc/routing']);
+        $this->validateConfig();
+
+        $fileLocator = new FileLocator([
+            $this->config->get(self::CONFIG_KEY_ROUTES_DIR)
+        ]);
 
         $requestContext = new RequestContext('/');
 
         $router = new SymfonyRouter(
             new YamlFileLoader($fileLocator),
-            'routes.yml',
-            ['cache_dir' => './../cache/routing'],
+            $this->config->get(self::CONFIG_KEY_ROUTES_FILE),
+            ['cache_dir' => $this->config->get(self::CONFIG_KEY_CACHE_DIR)],
             $requestContext
         );
 
-        return new Router($router);
+        return new Router($this->container, $router);
+    }
+
+    private function validateConfig(): void
+    {
+        if ($this->config->has(self::CONFIG_KEY_ROUTES_DIR) === false) {
+            throw new MissingConfigKeyException(self::CONFIG_KEY_ROUTES_DIR);
+        }
+
+        if ($this->config->has(self::CONFIG_KEY_ROUTES_FILE) === false) {
+            throw new MissingConfigKeyException(self::CONFIG_KEY_ROUTES_FILE);
+        }
+
+        if ($this->config->has(self::CONFIG_KEY_CACHE_DIR) === false) {
+            throw new MissingConfigKeyException(self::CONFIG_KEY_CACHE_DIR);
+        }
     }
 }

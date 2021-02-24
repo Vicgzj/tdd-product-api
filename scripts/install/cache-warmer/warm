@@ -2,5 +2,3 @@
 printf "ROOT_DIR=%s" "$(pwd)" > ./.env
 
 php ./scripts/install/cache-warmer/warm.php
-
-rm ./.env

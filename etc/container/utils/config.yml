@@ -1,0 +1,5 @@
+services:
+  config.factory:
+    class: Coolblue\Utils\Config\ConfigFactory
+    arguments:
+      - '@container'

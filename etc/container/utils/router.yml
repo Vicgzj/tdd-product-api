@@ -7,3 +7,12 @@ services:
 
   router.factory:
     class: Coolblue\Utils\Router\RouterFactory
+    arguments:
+      - '@container'
+      - '@router.config'
+
+  router.config:
+    class: Coolblue\Utils\Config\Config
+    factory: [ '@config.factory', create ]
+    arguments:
+      - 'routing'

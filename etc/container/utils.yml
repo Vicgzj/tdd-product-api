@@ -2,3 +2,4 @@ imports:
   - { resource: utils/container.yml }
   - { resource: utils/router.yml }
   - { resource: utils/http.yml }
+  - { resource: utils/config.yml }
