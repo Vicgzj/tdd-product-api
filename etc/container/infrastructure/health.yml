@@ -1,0 +1,7 @@
+services:
+  _defaults: { public: true }
+
+  health.status.controller:
+    class: Coolblue\TDD\Infrastructure\Health\HealthController
+    arguments:
+      - '@http.response.factory'

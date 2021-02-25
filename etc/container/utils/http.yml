@@ -3,3 +3,6 @@ services:
 
   http:
     class: Coolblue\Utils\Http\Http
+
+  http.response.factory:
+    class: Laminas\Diactoros\ResponseFactory
