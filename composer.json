@@ -29,7 +29,8 @@
   "autoload": {
     "psr-4": {
       "Coolblue\\TDD\\": "src",
-      "Coolblue\\Utils\\": "utils"
+      "Coolblue\\Utils\\": "utils",
+      "Coolblue\\Tests\\": "tests/unit/src/"
     }
   }
 }
