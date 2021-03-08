@@ -1,5 +1,5 @@
 {
-  "name": "vendor_name/tdd-product-api",
+  "name": "coolblue/tdd-product-api",
   "description": "description",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -24,7 +24,9 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-master"
+    "roave/security-advisories": "dev-master",
+    "phpspec/prophecy-phpunit": "^2.0",
+    "phpunit/phpunit": "^9"
   },
   "autoload": {
     "psr-4": {
