@@ -9,3 +9,4 @@ use Noodlehaus\AbstractConfig;
 class Config extends AbstractConfig implements ConfigInterface
 {
 }
+

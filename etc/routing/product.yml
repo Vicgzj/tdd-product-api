@@ -1,0 +1,4 @@
+product.accessories:
+  path: /product/{productId}/accessories
+  controller: 'product.accessories.controller'
+  methods: GET

@@ -1,0 +1,5 @@
+services:
+  _defaults: { public: true }
+
+  product.accessories.controller:
+    class: Coolblue\TDD\Infrastructure\Product\ProductController

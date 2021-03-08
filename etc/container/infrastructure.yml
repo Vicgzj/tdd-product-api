@@ -1,2 +1,3 @@
 imports:
   - { resource: infrastructure/health.yml }
+  - { resource: infrastructure/product.yml }
