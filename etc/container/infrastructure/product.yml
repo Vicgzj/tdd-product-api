@@ -2,4 +2,6 @@ services:
   _defaults: { public: true }
 
   product.accessories.controller:
-    class: Coolblue\TDD\Infrastructure\Product\ProductController
+    class: Coolblue\TDD\Infrastructure\Product\GetProductAccessoriesController
+    arguments:
+      - '@http.response.factory'
