@@ -2,3 +2,8 @@ product.accessories:
   path: /product/{productId}/accessories
   controller: 'product.accessories.controller'
   methods: GET
+
+product.full_name:
+  path: /product/{productId}/fullName
+  controller: 'product.full_name.controller'
+  methods: GET
