@@ -6,11 +6,17 @@ namespace Coolblue\TDD\Infrastructure\Product;
 
 use Coolblue\TDD\Application\Product\ProductException;
 use Coolblue\TDD\Application\Product\ProductInformationServiceInterface;
+use Coolblue\TDD\Application\Product\ProductNotFoundException;
+use Coolblue\TDD\Domain\Accessory\Accessory;
 use Coolblue\TDD\Domain\Product\Product;
 use Exception;
+use Faker\Factory;
 
 class ProductInformationService implements ProductInformationServiceInterface
 {
+    /** @var Product[] */
+    private array $mockedProductData;
+
     public function productExists(int $productId): bool
     {
         return isset($this->mockProductData()[$productId]);
@@ -35,14 +41,70 @@ class ProductInformationService implements ProductInformationServiceInterface
     }
 
     /**
+     * @param int $amountOfProducts
      * @return Product[]
      */
-    private function mockProductData(): array
+    private function mockProductData(int $amountOfProducts = 5): array
     {
-        return [
-            123456 => new Product('Iphone 12 256GB Black', 123456, 123456),
-            666777 => new Product('Haier XC120VWB1R64SR', 666777, 102934),
-            733933 => new Product('Iphone 7 128GB Pink', 733933, 345123)
-        ];
+        $faker = Factory::create('lv_LV');
+        $products = [];
+
+        if (isset($this->mockedProductData)) {
+            return $this->mockedProductData;
+        }
+
+        for($i = 0; $i < $amountOfProducts; $i++) {
+            $productName = $faker->sentence(3);
+            $id = $i;
+            $imageId = $i;
+
+            $accessories = [];
+
+            for($j = 0; $j < 4; $j++) {
+                $accessoryName = $faker->sentence(1);
+                $accessoryId = (int)($i . $j);
+                $accessoryImageId = (int)($i . $j);
+
+                $accessories[] = new Accessory(
+                    $accessoryName,
+                    $accessoryId,
+                    $accessoryImageId,
+                    []
+                );
+            }
+
+            $products[] = new Product(
+                $productName,
+                $id,
+                $imageId,
+                $accessories
+            );
+        }
+
+        $this->mockedProductData = $products;
+
+        return $this->mockedProductData;
     }
+
+    /** @inheritDoc */
+    public function getProductAccessories(int $productId): array
+    {
+        if (!$this->productExists($productId)) {
+            throw new ProductNotFoundException('Product id ' . $productId . ' not found.');
+        }
+
+        $product = $this->mockProductData()[$productId];
+
+        // Simulate that sometimes, this goes wrong.
+        try {
+            if (random_int(0, 100) === 1) {
+                throw new ProductException('Error getting product information');
+            }
+        } catch (Exception $exception) {
+            throw new ProductException('Error getting product information');
+        }
+
+        return $product->getAccessories();
+    }
+
 }
