@@ -57,6 +57,10 @@ class GetProductControllerTest extends TestCase
         $request = (new ServerRequest())->withAttribute('productId', (string) self::PRODUCT_ID);
 
         $this->productInformationService
+            ->productExists(self::PRODUCT_ID)
+            ->willReturn(true);
+
+        $this->productInformationService
             ->getProductInformation(self::PRODUCT_ID)
             ->willThrow(new ProductException('Exception'));
 
@@ -84,9 +88,13 @@ class GetProductControllerTest extends TestCase
         $this->productController->handle($request);
     }
 
-    public function testShouldReturnOKWithBodyWhenPISGetsProductInfoOnHandle(): void
+    public function testShouldReturnOKWithBodyWhenProductInfoIsFoundOnHandle(): void
     {
         $request = (new ServerRequest())->withAttribute('productId', (string)self::PRODUCT_ID);
+
+        $this->productInformationService
+            ->productExists(self::PRODUCT_ID)
+            ->willReturn(true);
 
         $this->productInformationService
             ->getProductInformation(self::PRODUCT_ID)
@@ -107,7 +115,8 @@ class GetProductControllerTest extends TestCase
         return new Product(
             self::PRODUCT_NAME,
             self::PRODUCT_ID,
-            self::IMAGE_ID
+            self::IMAGE_ID,
+            []
         );
     }
 }

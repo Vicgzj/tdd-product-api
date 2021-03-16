@@ -5,6 +5,7 @@ services:
     class: Coolblue\TDD\Infrastructure\Product\GetProductAccessoriesController
     arguments:
       - '@http.response.factory'
+      - '@product.product_information_service'
 
   product.controller:
     class: Coolblue\TDD\Infrastructure\Product\GetProductController

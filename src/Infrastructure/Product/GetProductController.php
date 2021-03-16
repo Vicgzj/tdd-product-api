@@ -31,7 +31,7 @@ class GetProductController implements RequestHandlerInterface
     {
         $productId = $request->getAttribute('productId');
 
-        if (is_numeric($productId) === false) {
+        if ($this->containsOnlyNumbers($productId) === false) {
             return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_BAD_REQUEST);
         }
 
@@ -50,5 +50,10 @@ class GetProductController implements RequestHandlerInterface
         $response->getBody()->write(json_encode($product, JSON_THROW_ON_ERROR));
 
         return $response;
+    }
+
+    private function containsOnlyNumbers(string $input): bool
+    {
+        return ctype_digit((string) $input);
     }
 }
