@@ -4,10 +4,3 @@ product.information:
   requirements:
     productId: '\d+'
   methods: GET
-
-product.accessories:
-  path: /product/{productId}/accessories
-  controller: 'product.accessories.controller'
-  requirements:
-    productId: '\d+'
-  methods: GET

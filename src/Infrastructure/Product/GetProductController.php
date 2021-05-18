@@ -6,6 +6,7 @@ namespace Coolblue\TDD\Infrastructure\Product;
 
 use Coolblue\TDD\Application\Product\ProductException;
 use Coolblue\TDD\Application\Product\ProductInformationServiceInterface;
+use Coolblue\TDD\Domain\Product\Product;
 use Coolblue\Utils\Http\ContentType;
 use Coolblue\Utils\Http\Header;
 use Fig\Http\Message\StatusCodeInterface;
@@ -45,15 +46,20 @@ class GetProductController implements RequestHandlerInterface
             return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         }
 
-        $response = $this->responseFactory->createResponse(StatusCodeInterface::STATUS_OK);
-        $response->withHeader(Header::CONTENT_TYPE, ContentType::JSON);
-        $response->getBody()->write(json_encode($product, JSON_THROW_ON_ERROR));
-
-        return $response;
+        return $this->createResponse(StatusCodeInterface::STATUS_OK, $product);
     }
 
     private function containsOnlyNumbers(string $input): bool
     {
-        return ctype_digit((string) $input);
+        return ctype_digit($input);
+    }
+
+    private function createResponse(int $statusCode, Product $product): ResponseInterface
+    {
+        $response = $this->responseFactory->createResponse($statusCode);
+        $response->withHeader(Header::CONTENT_TYPE, ContentType::JSON);
+        $response->getBody()->write(json_encode($product, JSON_THROW_ON_ERROR));
+
+        return $response;
     }
 }

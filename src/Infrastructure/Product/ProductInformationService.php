@@ -6,8 +6,6 @@ namespace Coolblue\TDD\Infrastructure\Product;
 
 use Coolblue\TDD\Application\Product\ProductException;
 use Coolblue\TDD\Application\Product\ProductInformationServiceInterface;
-use Coolblue\TDD\Application\Product\ProductNotFoundException;
-use Coolblue\TDD\Domain\Accessory\Accessory;
 use Coolblue\TDD\Domain\Product\Product;
 use Exception;
 use Faker\Factory;
@@ -29,11 +27,7 @@ class ProductInformationService implements ProductInformationServiceInterface
         }
 
         // Simulate that sometimes, this goes wrong.
-        try {
-            if (random_int(0, 100) === 1) {
-                throw new ProductException('Error getting product information');
-            }
-        } catch (Exception $exception) {
+        if($this->randomInt(0, 100) === 1) {
             throw new ProductException('Error getting product information');
         }
 
@@ -54,30 +48,13 @@ class ProductInformationService implements ProductInformationServiceInterface
         }
 
         for($i = 0; $i < $amountOfProducts; $i++) {
-            $productName = $faker->sentence(3);
-            $id = $i;
-            $imageId = $i;
-
-            $accessories = [];
-
-            for($j = 0; $j < 4; $j++) {
-                $accessoryName = $faker->sentence(1);
-                $accessoryId = (int)($i . $j);
-                $accessoryImageId = (int)($i . $j);
-
-                $accessories[] = new Accessory(
-                    $accessoryName,
-                    $accessoryId,
-                    $accessoryImageId,
-                    []
-                );
-            }
+            $id = $this->randomInt(100000, 999999);
+            $imageId = $this->randomInt(100000, 999999);
 
             $products[] = new Product(
-                $productName,
+                implode(" ", $faker->words($this->randomInt(1, 3))),
                 $id,
-                $imageId,
-                $accessories
+                $imageId
             );
         }
 
@@ -86,25 +63,13 @@ class ProductInformationService implements ProductInformationServiceInterface
         return $this->mockedProductData;
     }
 
-    /** @inheritDoc */
-    public function getProductAccessories(int $productId): array
+    private function randomInt(int $min, int $max): int
     {
-        if (!$this->productExists($productId)) {
-            throw new ProductNotFoundException('Product id ' . $productId . ' not found.');
-        }
-
-        $product = $this->mockProductData()[$productId];
-
-        // Simulate that sometimes, this goes wrong.
         try {
-            if (random_int(0, 100) === 1) {
-                throw new ProductException('Error getting product information');
-            }
+            return random_int($min, $max);
         } catch (Exception $exception) {
-            throw new ProductException('Error getting product information');
+            return (int) floor(($min + $max) / 2);
         }
-
-        return $product->getAccessories();
     }
 
 }

@@ -115,8 +115,7 @@ class GetProductControllerTest extends TestCase
         return new Product(
             self::PRODUCT_NAME,
             self::PRODUCT_ID,
-            self::IMAGE_ID,
-            []
+            self::IMAGE_ID
         );
     }
 }
