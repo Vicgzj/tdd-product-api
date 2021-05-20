@@ -15,11 +15,6 @@ class ProductInformationService implements ProductInformationServiceInterface
     /** @var Product[] */
     private array $mockedProductData;
 
-    public function productExists(int $productId): bool
-    {
-        return isset($this->mockProductData()[$productId]);
-    }
-
     public function getProductInformation(int $productId): ?Product
     {
         if (!$this->productExists($productId)) {
@@ -32,6 +27,11 @@ class ProductInformationService implements ProductInformationServiceInterface
         }
 
         return $this->mockProductData()[$productId];
+    }
+
+    private function productExists(int $productId): bool
+    {
+        return isset($this->mockProductData()[$productId]);
     }
 
     /**

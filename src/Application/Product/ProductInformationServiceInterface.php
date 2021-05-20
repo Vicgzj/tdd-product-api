@@ -9,11 +9,9 @@ use Coolblue\TDD\Domain\Product\Product;
 interface ProductInformationServiceInterface
 {
     /**
-     * @param int $productId
-     * @throws ProductException when it fails to fetch product information
+     * @param int $productId the productId to get the productInformation for.
+     * @throws ProductException when it fails to fetch product information.
      * @return Product|null Product when product is found, else null.
      */
     public function getProductInformation(int $productId): ?Product;
-
-    public function productExists(int $productId): bool;
 }
