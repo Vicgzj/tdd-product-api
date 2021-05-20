@@ -32,21 +32,7 @@ class GetProductController implements RequestHandlerInterface
     {
         $productId = $request->getAttribute('productId');
 
-        if ($this->containsOnlyNumbers($productId) === false) {
-            return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_BAD_REQUEST);
-        }
-
-        if ($this->productInformationService->productExists((int) $productId) === false) {
-            return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_NOT_FOUND);
-        }
-
-        try {
-            $product = $this->productInformationService->getProductInformation((int) $productId);
-        } catch (ProductException $exception) {
-            return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
-        }
-
-        return $this->createResponse(StatusCodeInterface::STATUS_OK, $product);
+        return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_NOT_IMPLEMENTED);
     }
 
     private function containsOnlyNumbers(string $input): bool
@@ -54,7 +40,7 @@ class GetProductController implements RequestHandlerInterface
         return ctype_digit($input);
     }
 
-    private function createResponse(int $statusCode, Product $product): ResponseInterface
+    private function createResponseWithJson(int $statusCode, Product $product): ResponseInterface
     {
         $response = $this->responseFactory->createResponse($statusCode);
         $response->withHeader(Header::CONTENT_TYPE, ContentType::JSON);
