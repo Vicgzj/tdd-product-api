@@ -18,3 +18,8 @@ warm: ## Warm up the container and router
 .PHONY: start
 start: ## Start the API
 	php -S 127.0.0.1:8000 -t public
+
+.PHONY: install
+install: ## Install the development environment
+	composer install
+	make build_cache
